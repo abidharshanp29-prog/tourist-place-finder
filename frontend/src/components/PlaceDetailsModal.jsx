@@ -16,7 +16,7 @@ import {
   ChevronLeft,
   ChevronRight
 } from 'lucide-react';
-import { getPlaceDetails } from '../services/api';
+import { getPlaceDetails, API_BASE_URL } from '../services/api';
 
 export default function PlaceDetailsModal({
   place,
@@ -59,7 +59,7 @@ export default function PlaceDetailsModal({
   if (!place) return null;
 
   const currentPlace = details || place;
-  const photos = details?.photos || (place.photo_url ? [{ url: `http://127.0.0.1:8000${place.photo_url}` }] : []);
+  const photos = details?.photos || (place.photo_url ? [{ url: place.photo_url.startsWith('http') ? place.photo_url : (API_BASE_URL ? `${API_BASE_URL}${place.photo_url}` : place.photo_url) }] : []);
 
   return (
     <div className="fixed inset-0 z-50 overflow-y-auto bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-3 sm:p-5">
@@ -69,7 +69,7 @@ export default function PlaceDetailsModal({
           {photos.length > 0 ? (
             <>
               <img
-                src={photos[activePhotoIdx]?.url.startsWith('/') ? `http://127.0.0.1:8000${photos[activePhotoIdx].url}` : photos[activePhotoIdx]?.url}
+                src={photos[activePhotoIdx]?.url.startsWith('http') ? photos[activePhotoIdx]?.url : (API_BASE_URL ? `${API_BASE_URL}${photos[activePhotoIdx].url}` : photos[activePhotoIdx]?.url)}
                 alt={currentPlace.name}
                 className="w-full h-full object-cover"
               />

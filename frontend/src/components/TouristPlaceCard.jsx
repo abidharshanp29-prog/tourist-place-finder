@@ -1,5 +1,6 @@
 import React from 'react';
 import { Star, MapPin, Info, Navigation, Flag, Check, ImageOff } from 'lucide-react';
+import { API_BASE_URL } from '../services/api';
 
 export default function TouristPlaceCard({
   place,
@@ -16,7 +17,7 @@ export default function TouristPlaceCard({
 
   // Fallback image gradient or travel placeholder if photo fails or none available
   const photoUrl = place.photo_url && !imgError 
-    ? (place.photo_url.startsWith('http') ? place.photo_url : `http://127.0.0.1:8000${place.photo_url}`)
+    ? (place.photo_url.startsWith('http') ? place.photo_url : (API_BASE_URL ? `${API_BASE_URL}${place.photo_url}` : place.photo_url))
     : null;
 
   return (

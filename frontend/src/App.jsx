@@ -108,7 +108,11 @@ export default function App() {
       }
     } catch (err) {
       console.error('[Search Error] Failed to search places:', err);
-      setSearchError(err.message || 'Failed to search places.');
+      let errorMsg = err.message || 'Failed to search places.';
+      if (errorMsg.includes('Failed to fetch') || errorMsg.includes('NetworkError')) {
+        errorMsg = 'Network connection issue. Please check your internet connection and try again.';
+      }
+      setSearchError(errorMsg);
       setPlaces([]);
     } finally {
       setIsSearching(false);
@@ -214,12 +218,20 @@ export default function App() {
 
         {/* Search Error Notice */}
         {searchError && (
-          <div className="mb-6 p-4 rounded-2xl bg-rose-50 border border-rose-200 text-rose-800 flex items-start gap-3">
-            <AlertTriangle className="w-5 h-5 text-rose-600 shrink-0 mt-0.5" />
-            <div>
-              <h4 className="text-xs font-bold uppercase tracking-wider">Search Notice</h4>
-              <p className="text-xs mt-0.5">{searchError}</p>
+          <div className="mb-6 p-4 rounded-2xl bg-rose-50 border border-rose-200 text-rose-800 flex items-start justify-between gap-3 shadow-sm">
+            <div className="flex items-start gap-3">
+              <AlertTriangle className="w-5 h-5 text-rose-600 shrink-0 mt-0.5" />
+              <div>
+                <h4 className="text-xs font-bold uppercase tracking-wider text-rose-900">Search Notice</h4>
+                <p className="text-xs mt-0.5 text-rose-700">{searchError}</p>
+              </div>
             </div>
+            <button
+              onClick={() => handleSearch(currentQuery || 'Paris')}
+              className="px-3 py-1.5 bg-rose-600 hover:bg-rose-700 text-white text-xs font-semibold rounded-lg transition-colors shrink-0 shadow-sm"
+            >
+              Retry Search
+            </button>
           </div>
         )}
 
